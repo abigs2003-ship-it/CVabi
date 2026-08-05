@@ -18,10 +18,11 @@ if (app && window.Typewriter) {
     .typeString('<strong> Desarrolladora Web</strong>')
     .pauseFor(1600)
     .deleteChars(19)
-
     .start();
 }
 
+
+// ---------- AOS Animaciones ----------
 if (window.AOS) {
   AOS.init({
     duration: 650,
@@ -31,42 +32,71 @@ if (window.AOS) {
   });
 }
 
+
 // ---------- Navbar: fondo sólido al hacer scroll ----------
 const mainNav = document.getElementById('mainNav');
+
 function updateNavbar() {
   if (!mainNav) return;
+
   if (window.scrollY > 40) {
     mainNav.classList.add('scrolled');
   } else {
     mainNav.classList.remove('scrolled');
   }
 }
+
 window.addEventListener('scroll', updateNavbar);
 updateNavbar();
+
 
 // ---------- Barra de avance de carrera ----------
 const progressBar = document.getElementById('progressBar');
 const progressValue = document.getElementById('progressValue');
+const progressContainer = document.querySelector('.progress');
+
 const TARGET_PERCENT = 65;
 
-if (progressBar && progressValue) {
-  const progressObserver = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        progressBar.style.width = TARGET_PERCENT + '%';
-        let n = 0;
-        const step = setInterval(() => {
-          n += 1;
-          if (n >= TARGET_PERCENT) {
-            n = TARGET_PERCENT;
-            clearInterval(step);
-          }
-          progressValue.textContent = n + '%';
-        }, 18);
-        progressObserver.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.4 });
+if (progressBar && progressValue && progressContainer) {
 
-  progressObserver.observe(progressBar);
+  const progressObserver = new IntersectionObserver(
+    (entries) => {
+
+      entries.forEach((entry) => {
+
+        if (entry.isIntersecting) {
+
+          // Animación de la barra
+          progressBar.style.width = TARGET_PERCENT + '%';
+
+
+          // Animación del número
+          let n = 0;
+
+          const counter = setInterval(() => {
+
+            n++;
+
+            progressValue.textContent = n + '%';
+
+            if (n >= TARGET_PERCENT) {
+              clearInterval(counter);
+            }
+
+          }, 18);
+
+
+          progressObserver.unobserve(entry.target);
+        }
+
+      });
+
+    },
+    {
+      threshold: 0.5
+    }
+  );
+
+
+  progressObserver.observe(progressContainer);
 }
